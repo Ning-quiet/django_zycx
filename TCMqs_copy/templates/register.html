@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{% block slibar %}注册{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user.css' %} " rel="stylesheet">
+</head>
+
+<body class="body_bg">
+
+<br>
+<div class="container-fluid" style="margin-top: 7%;">
+<h2 align="center" class="register_title" id="register_t" style="width: 90%">{% block title%}注册页面{% endblock %}</h2><br/>
+    <div class=" row">
+        <div class="register_reshape">
+            <div class="col-md-6 col-md-offset-3" >
+                {#                                提交到这个地址user/register_handle#}
+                <form class="form-horizontal" method="post" {% block action %}action="/user/register_handle"{% endblock %}>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="inputEmail" class="col-sm-2 control-label" autocomplete="on">邮件地址</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="inputEmail" placeholder="Email"
+                                   name="inputEmail">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword" class="col-sm-2 control-label">密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="inputPassword" name="inputPassword"
+                                   placeholder="Password"
+                                   minlength="6"
+                                   maxlength="20">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="againPassword" class="col-sm-2 control-label">确认密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="againPassword" placeholder="Password"
+                                   minlength="6"
+                                   maxlength="20">
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <p class="help-block col-sm-offset-2  col-sm-10 ">
+                            <span style="color:red" id="error">错误信息提示:</span><span style="color:deeppink"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span style="color:deeppink "></span>
+                            {% load cache %}
+                            {% cache 10 sidebar %}
+                                <span>{{ errmsg }}</span
+                            {% endcache %}
+
+                            >
+                        </p>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default" id="register">{% block slibar_1 %}注册{% endblock %}</button>
+                            <button type="reset" class="btn btn-default">清除</button> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+                            &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                            <span style="text-align: right">
+                            <a role="button" class="btn btn-success" href="/user/login" >返回登录</a>
+                        </span>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       {% block tip %} <h5 style="color: #2e6da4;text-align: center;width: 87%">温馨提示：注册之后,请查看邮箱，点击链接激活</h5>{% endblock %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/jquery-3.6.0.js' %}"></script>
+<script type="text/javascript">
+    var $pas1 = $("#inputPassword");
+    var $pas2 = $("#againPassword");
+    var $error = $("#error");
+    var $regiser = $("#register")
+    var $inputEmail = $("#inputEmail")
+
+    function check() {
+        if (($pas1.val().length < 6 || $pas2.val().length < 6) && $pas1.val().length > 20) {
+            $error.next().html("密码或确认密码长度小于6大于20")
+
+        } else {
+            $error.next().html("")
+        }
+        if ($pas1.val().trim() != $pas2.val().trim()) {
+            $error.next().next().html("两次密码不一致")
+        } else if (($pas1.val().trim().length != 0) && ($pas2.val().trim().length != 0) && $pas1.val().trim() == $pas2.val().trim()) {
+            $error.next().next().html("两次密码一致")
+        }
+
+    }
+
+    $pas1.blur(function () {
+
+        check()
+
+    })
+
+    $pas2.blur(function () {
+
+        check()
+    })
+
+    $regiser.click(function () {
+        var pass = $pas1.val().trim()
+        var again_pass = $pas2.val().trim()
+        if (!$inputEmail.val()) {
+            $error.next().html("邮箱地址未填写")
+            return false
+        }
+        if ((pass.length == 0 || again_pass.length == 0 || pass.length < 6 || again_pass.length < 6) && $pas1.val().length > 20) {
+            $error.next().html("密码或确认密码长度小于大于20")
+            return false
+        }
+        if ((pass != again_pass) && pass != 0 && again_pass != 0) {
+            $error.next().next().html("两次密码不一致")
+            $pas1.val("");
+            $pas2.val("");
+            return false;
+        }
+    })
+</script> <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+</body>
+</html>

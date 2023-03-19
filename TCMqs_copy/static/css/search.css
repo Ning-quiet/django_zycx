@@ -1,0 +1,12 @@
+@charset "UTF-8";
+/**
+ * 
+ * @authors Your Name (you@example.org)
+ * @date    2021-11-10 22:48:26
+ * @version $Id$
+ */
+ .block{
+     display:inline-block;
+     color: rgb(209, 16, 16);
+     margin: 0px 6px 0px 0px;
+ }

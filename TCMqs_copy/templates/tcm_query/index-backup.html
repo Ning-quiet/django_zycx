@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+{% load static  %}
+{% load thumbnail %}
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>主页</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link href="" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <link rel="stylesheet" href="{% static 'css/zzsc.css' %}" type="text/css" media="screen">
+
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+    {% include 'base/nav.html' %}
+
+      <div class="col-md-12" style="margin-top: 50px">
+        <div id="wrapper">
+          <div id="jsCarousel">
+              {% for item  in  banner_list %}
+               <div>
+              <img src="{{ item.tcm_banner.url }}" /><br />
+                   {% if item.tcmdetailinfomations.id  != '' %}
+              <span class="thumbnail-text" navbar-text> <a href="/tcmquery/detail/{{ item.tcmdetailinfomations.id }}">{{ item.tcm_title }}</a></span>
+               {% else %}
+                       <span class="thumbnail-text" navbar-text> <a href="/tcmquery/index">{{ item.tcm_title }}</a></span>
+               {% endif %}
+               </div>
+
+             {% endfor %}
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div >
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="list-group">
+          <a href="#" class="list-group-item active">
+            最热
+          </a>
+            {% for item in  tcm_hot  %}
+          <a href="{% url 'tcm_query:detail' item.pk %}" class="list-group-item">{{ item.tcm_title }}</a>
+            {% endfor %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <a href="#" class="list-group-item active">
+          最新
+        </a>
+        {% for item in  tcm_new  %}
+          <a href="{% url 'tcm_query:detail' item.pk %}" class="list-group-item">{{ item.tcm_title }}</a>
+            {% endfor %}
+
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="text-left">
+          中药展示
+        </h3>
+        <div class="row">
+            {% for item in chese_herb_show %}
+                  <div class="col-md-4">
+            <div class="card">
+                {% thumbnail item.tcm_show "426x200" crop="center" as im %}
+                <img   src="{{ im.url }}">
+                {% empty %}
+                {% endthumbnail %}
+
+              <div class="card-block">
+                <h5 class="card-title">
+                  {{ item.tcm_title }}
+                </h5>
+                <p class="card-text">
+                 {% autoescape off %}
+                  {{ item.tcmdetailinfomations.desc_fields_show }}
+                 {% endautoescape %}
+                </p>
+                <p>
+                  {% if item.tcmdetailinfomations  != '' %}
+
+                  <a class="btn btn-danger" href="/tcmquery/detail/{{ item.tcmdetailinfomations.id }}">去了解</a>
+                      {% else  %}
+                    <a class="btn btn-danger" href="/tcmquery/index">去了解</a>
+
+                    {% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+            {% endfor  %}
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar navbar-default navbar-fixed-bottom" id="footer" align="center">
+    <div class="container-fluid">
+      <div class="footer" align="center">
+        <div class="foot_link">
+          <a href="#">关于我</a>
+          <span>|</span>
+          <a href="#">联系我</a>
+
+
+          <span>|</span>
+          <a href="#">友情链接</a>
+        </div>
+        <p>CopyRight ©2021 个人 All Rights Reserved</p>
+        <p>电话：010-****888 京ICP备*******8号</p>
+      </div>
+
+    </div>
+    </div>
+  </nav>
+
+  <script src="{% static 'js/jquery-3.6.0.js' %}"></script>
+  <script src="{% static 'js/jscarousel.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/footer.js' %}"></script>
+  <script type="text/javascript">
+    $('#jsCarousel').jsCarousel({
+      onthumbnailclick: function (src) {
+        $("#overlay_pic").attr('src', src);
+        $(".overlay").show();
+      },
+      autoscroll: true
+    });
+
+    $(".overlay").click(function () {
+      $(this).hide();
+    });
+  </script>
+
+
+</body>
+</body>
+
+</html>

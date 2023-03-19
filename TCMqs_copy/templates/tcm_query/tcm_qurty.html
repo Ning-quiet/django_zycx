@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>中药查询</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link href="" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}">
+
+</head>
+
+<body>
+{% include 'base/nav.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12"> {% include 'base/nav.html' %}
+        </div>
+        <div class="col-md-12" style=" position: relative;z-index: 999;margin-top: 50px">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                               aria-expanded="true" aria-controls="collapseOne">
+                                按药名查询
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                         aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            {% for item in tcm_detail_yaoming %}
+                                {% if forloop.counter < 100 %}
+                                    <a class="btn btn-success btn-xs" role="button"
+                                       href="{% url 'tcm_query:detail' item.pk %}"
+                                       aria-expanded="false"
+                                       target="_blank">
+                                        {{ item.tcm_title }}
+                                    </a>&nbsp;
+                                {% endif %}
+
+                                {% if forloop.counter == 100 %}
+                                    <a class="btn btn-success btn-xs" role="button" href="#input_tcm"
+                                       aria-expanded="false"
+                                       target="_self">
+                                        更多
+                                    </a>&nbsp;
+                                    <span>共展示{{ forloop.counter }}条数据</span>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseTwo"
+                               aria-expanded="false" aria-controls="collapseTwo">
+                                按归经查询
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+
+
+                            {% regroup tcm_detail_guijing by channel_entry as channel_entry_list %}
+
+                            <ul class="list-group">
+                                {% for item in channel_entry_list %}
+                                    {% if item.grouper != None %}
+                                        <li class="list-group-item list-group-item-{% cycle 'success' 'secondary' 'info' 'primary' 'dark' %}">{{ item.grouper }}
+                                            <ul>
+                                                {% for it in item.list %}
+                                                    <a class="btn btn-success btn-xs" role="button"
+                                                       href="{% url 'tcm_query:detail' it.pk %}"
+                                                       target="_blank">
+                                                        {{ it.tcm_title }}
+                                                    </a>&nbsp;
+
+
+
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingThree">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseThree"
+                               aria-expanded="false" aria-controls="collapseThree">
+                                按功效查询
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingThree">
+                        <div class="panel-body">
+                            {% regroup tcm_detail_gongxiao by efficacy_category as efficacy_category_list %}
+
+                            <ul class="list-group">
+                                {% for item in efficacy_category_list %}
+                                    {% if item.grouper != None and item.grouper != '' %}
+
+                                        <li class="list-group-item list-group-item-success">
+                                            {{ item.grouper }}
+                                            <ul>
+                                                {% for it in item.list %}
+
+                                                    <a class="btn btn-success btn-xs" role="button"
+                                                       href="{% url 'tcm_query:detail' it.pk %}"
+                                                       target="_blank">
+                                                        {{ it.tcm_title }}
+
+                                                    </a>&nbsp;
+
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFour">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseFour"
+                               aria-expanded="false" aria-controls="collapseFour">
+                                按药性查询
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingFour">
+                        <div class="panel-body">
+
+                            <!-- 选项卡 -->
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#tcm_home">热性中药</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tcm_menu1">温性中药</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tcm_menu2">寒性中药</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tcm_menu3">凉性中药</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tcm_menu4">平性中药</a>
+                                </li>
+                            </ul>
+                            <!-- 选项卡对应内容 -->
+                            <div class="tab-content" style="margin-left: -50px;margin-top: 10px">
+                                <div class="tab-pane  active container" id="tcm_home">
+                                    {% for item in rexing %}
+
+                                        <a class="btn btn-success btn-xs" role="button"
+                                           href="{% url 'tcm_query:detail' item.pk %}"
+                                           aria-expanded="false"
+                                           target="_blank">
+                                            {{ item.tcm_title }}
+                                        </a>&nbsp;
+                                    {% empty %}
+                                        暂无数据
+                                    {% endfor %}
+
+                                </div>
+                                <div class="tab-pane  container" id="tcm_menu1">
+                                    {% for item in wenxing %}
+
+                                        <a class="btn btn-success btn-xs" role="button"
+                                           href="{% url 'tcm_query:detail' item.pk %}"
+                                           target="_blank">
+                                            {{ item.tcm_title }}
+                                        </a>&nbsp;
+
+
+                                    {% empty %}
+                                        暂无数据
+                                    {% endfor %}
+                                </div>
+                                <div class="tab-pane  container" id="tcm_menu2">{% for item in hanxing %}
+                                    <a class="btn btn-success btn-xs" role="button"
+                                       href="{% url 'tcm_query:detail' item.pk %}"
+                                       target="_blank">
+                                        {{ item.tcm_title }}
+                                    </a>&nbsp;
+
+
+                                {% empty %}
+                                    暂无数据
+                                {% endfor %}
+                                </div>
+                                <div class="tab-pane  container" id="tcm_menu3">
+                                    {% for item in liangxing %}
+
+                                        <a class="btn btn-success btn-xs" role="button"
+                                           href="{% url 'tcm_query:detail' item.pk %}"
+                                           aria-expanded="false"
+                                           target="_blank">
+                                            {{ item.tcm_title }}
+                                        </a>&nbsp;
+
+
+
+                                    {% empty %}
+                                        暂无数据
+                                    {% endfor %}</div>
+                                <div class="tab-pane  container" id="tcm_menu4">{% for item in pingxing %}
+                                    <a class="btn btn-success btn-xs" role="button"
+                                       href="{% url 'tcm_query:detail' item.pk %}"
+                                       target="_blank">
+                                        {{ item.tcm_title }}
+                                    </a>&nbsp;
+
+
+                                {% empty %}
+                                    暂无数据
+                                {% endfor %}</div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="heading5">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapse5"
+                               aria-expanded="false" aria-controls="collapse5">
+                                按药用部位查询
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
+                        <div class="panel-body">
+
+                            {% regroup tcm_detail_medicinal_part_ca  by get_medicinal_part_ca_display as medicinal_part_ca_list %}
+
+                            <ul class="list-group">
+                                {% for item in medicinal_part_ca_list %}
+                                    {% if item.grouper != None %}
+                                        <li class="list-group-item list-group-item-{% cycle 'success' 'secondary' 'info' 'primary' 'dark' %}">{{ item.grouper }}
+                                            <ul>
+                                                {% for it in item.list %}
+                                                    <a class="btn btn-success btn-xs" role="button"
+                                                       href="{% url 'tcm_query:detail' it.pk %}"
+                                                       target="_blank">
+                                                        {{ it.tcm_title }}
+                                                    </a>&nbsp;
+
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">自定义查询</h3>
+                </div>
+                <div class="panel-body">
+                    <!--自定义查询·-->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group ">
+                                <label><span
+                                        class="help-block block">提示</span><span>药名、种名称、科名称,学名</span></label>
+                                <input type="text" class="form-control" id="input_tcm" style="width: 40%;"
+                                       placeholder="请输入条件">
+                            </div>
+                            <button type="submit" class="btn btn-warning" id="search_yao">查找</button>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group ">
+                                <label><span
+                                        class="help-block block">提示</span><span>功能作用,归经</span></label>
+                                <input type="text" class="form-control" id="input_tcm_eff" style="width: 60%;"
+                                       placeholder="请输入条件">
+                            </div>
+                            <button type="submit" class="btn btn-warning" id="search_yao_eff">查找</button>
+                        </div>
+                    </div>
+                    <!-- 展示链接-->
+                    <div>
+                        <table class="table table-condensed">
+                            <caption>
+                                <h4>中药链接</h4>
+                            </caption>
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>药名</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tcm_tbody_content">
+
+                            </tbody>
+                        </table>
+                        <ul class="pagination">
+                            <li>
+                                <a href="#">上一页</a>
+                            </li>
+
+                            <li>
+                                <a href="#">下一页</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <nav class="navbar navbar-default navbar-fixed-bottom" id="footer" align="center">
+                <div class="container-fluid">
+                    <div class="footer" align="center">
+                        <div class="foot_link">
+                            <a href="#">关于我</a>
+                            <span>|</span>
+                            <a href="#">联系我</a>
+
+
+                            <span>|</span>
+                            <a href="#">友情链接</a>
+                        </div>
+                        <p>CopyRight ©2021 个人 All Rights Reserved</p>
+                        <p>电话：010-****888 京ICP备*******8号</p>
+                    </div>
+
+                </div>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script>
+    $(function () {
+
+
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+        });
+        $('#search_yao').click(function () {
+            $('#tcm_tbody_content').empty()
+
+            // 1、获取
+            var $input_tcm = $("#input_tcm").val()
+            // 2、发起 post ajax 请求
+            $.ajax({
+                'url': '/tcmquery/query/search',
+                'type': 'post',
+                'data': {'input_tcm': $input_tcm},
+                'dataType': 'json',
+                success: function (data) {
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+
+
+                            $('#tcm_tbody_content').append("<tr><td>" + (i + 1) + "</td><td>" +
+                                "<a href='/tcmquery/detail/" + data[i]['id'] + "'>" + data[i]["title"] + "</td></a></tr>")
+
+                        }
+
+
+                    } else {
+                         $('#tcm_tbody_content').children().remove()
+                        $('#tcm_tbody_content').append("暂无数据")
+
+
+                    }
+                }
+
+            })
+        })
+
+
+        $('#search_yao_eff').click(function () {
+
+            {#$('#tcm_tbody_content').children().remove()#}
+             $('#tcm_tbody_content').empty()
+
+
+            // 1、获取
+            var $input_tcm_eff = $("#input_tcm_eff").val()
+            // 2、发起 post ajax 请求
+            $.ajax({
+                'url': '/tcmquery/query/search_eff',
+                'type': 'post',
+                'data': {'input_tcm_eff': $input_tcm_eff},
+                'dataType': 'json',
+                success: function (data) {
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#tcm_tbody_content').append("<tr><td>" + (i + 1) + "</td><td>" +
+                                "<a href='/tcmquery/detail/" + data[i]['id'] + "'>" + data[i]["title"] + "</td></a></tr>")
+
+                        }
+
+                    } else {
+                                                 $('#tcm_tbody_content').children().remove()
+
+                        $('#tcm_tbody_content').append("暂无数据")
+                    }
+                }
+
+            })
+        })
+
+
+    })
+
+</script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+<script src="{% static 'js/footer.js' %}"></script>
+<script>
+
+    $(function () {
+
+
+        $('#myCollapsible').collapse({
+            toggle: false
+        })
+
+    });
+
+
+</script>
+
+
+</body>
+
+</html>

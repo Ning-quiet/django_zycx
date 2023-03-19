@@ -1,0 +1,28 @@
+.detail_header{
+
+    font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-style: italic;
+    font-weight: bolder;
+    display: block;
+    color: #58a412;
+    border-bottom-color: #0ea432;
+
+}
+.detail_header_weight{
+    font-weight: bolder;
+}
+.detail_font_size{
+    font-size: x-large;
+    font-weight: bolder;
+}
+.detail_font_show_size{
+    font-size: 20px;
+}
+.detail_font_show_indent{
+    text-indent: 20px;
+}
+.recommed_img{
+    height: 300px;
+    width: 200px;
+
+}

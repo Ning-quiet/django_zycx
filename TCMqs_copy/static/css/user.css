@@ -1,0 +1,56 @@
+@charset "UTF-8";
+
+/**
+ * 
+ * @authors Your Name (you@example.org)
+ * @date    2021-11-09 21:09:29
+ * @version $Id$
+ */
+.badge {
+	font-size: 24px;
+	color: #1d1c1c;
+	background-color: transparent;
+	text-align: center;
+	position: relative;
+	width: 50%;
+}
+
+.form-control {
+	width: 60%;
+}
+
+.valid-code {
+	position: relative;
+
+}
+
+.valid-code input {
+	display: inline;
+	width: 20%;
+}
+
+.register_title {
+	color: black;
+}
+
+.register_reshape {
+	position: relative;
+	width: 100%;
+}
+
+.regiser_code {
+	height: 36.5px;
+
+}
+.body_bg{
+
+  background: #56ab2f; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #56ab2f, #a8e063); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #56ab2f, #a8e063); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+ .userinfo {
+        overflow-y: scroll;
+        min-height: 300px;
+    }

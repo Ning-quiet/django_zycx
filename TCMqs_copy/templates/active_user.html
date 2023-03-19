@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+        {% load static %}
+
+    <meta charset="utf-8">
+    <title>激活</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body style="background-color: #5cb85c">
+
+<div class="modal-dialog" style="margin-top: 10%;">
+    <div class="modal-content">
+        <form method="get" action="/user/active_handle">
+        <div class="modal-header">
+            <h4 class="modal-title text-center" id="myModalLabel" style="font-family: 'Open Sans'">用户激活</h4>
+        </div>
+        <div class="modal-body" id="model-body">
+            <div class="form-group">
+
+                <input type="email" name='email' class="form-control" placeholder="email" autocomplete="off">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-group">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary form-control">激活</button>
+            </div>
+            <div class="form-group">
+              <p class="help-block" style="text-align: left;">
+                            <span style="color:red">错误信息提示：</span>
+                            <span style="color:hotpink">{{ errmsg }}</span>
+                        </p>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
